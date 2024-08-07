@@ -1,0 +1,1 @@
+export { default as workout } from '../pages/workout/store/workout';
