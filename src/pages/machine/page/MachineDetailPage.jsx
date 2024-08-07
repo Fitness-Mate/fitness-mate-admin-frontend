@@ -2,21 +2,21 @@ import React from 'react';
 import {Provider} from "react-redux";
 import configure from "../../../store/configure";
 
-import WorkoutDetailContainer from "../container/WorkoutDetailContainer";
+import MachineDetailContainer from "../container/MachineDetailContainer";
 import {useLocation} from "react-router-dom";
 import Layout from "../../../component/layout/layout";
 
-const WorkoutDetailPage = () => {
+const MachineDetailPage = () => {
     const path = useLocation().pathname.split("/");
     const id = path[2];
 
     return (
         <Provider store={configure}>
             <Layout>
-                <WorkoutDetailContainer id={id}/>
+                <MachineDetailContainer id={id}/>
             </Layout>
         </Provider>
     );
 };
 
-export default WorkoutDetailPage;
+export default MachineDetailPage;

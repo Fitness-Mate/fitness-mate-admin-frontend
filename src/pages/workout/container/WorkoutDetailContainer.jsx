@@ -1,12 +1,4 @@
 import React from 'react';
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-
-import * as workoutAction from '../store/workout'
-import * as apiUtil from '../../../util/apiUtil'
-
-import PaginationComponent from "../../../component/PagenationComponent";
-import {Link} from "@mui/material";
 
 class WorkoutDetailContainer extends React.Component {
     constructor(props) {
@@ -36,6 +28,6 @@ class WorkoutDetailContainer extends React.Component {
 //     (dispatch) => ({
 //         WorkoutAction: bindActionCreators(workoutAction, dispatch)
 //     })
-// )(WorkoutDetailContainer);
+// )(BodyPartDetailContainer);
 
 export default WorkoutDetailContainer;
