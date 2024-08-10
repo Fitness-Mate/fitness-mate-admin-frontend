@@ -22,7 +22,11 @@ export function sendRequest(configs) {
     if (!configs.isForm && configs.data) options.body = JSON.stringify(configs.data);
     else options.body = configs.data;
 
+    const setLoading = configs.setLoading || ((param) => {});
+    setLoading(true);
+
     const success = configs.success || ((param) => {});
+    const fail = configs.fail || ((param) => {});
 
     return fetch(options.url, options)
         .then((res) => {
@@ -30,10 +34,13 @@ export function sendRequest(configs) {
 
             res.json().then((json)=>{
                 if(json.code === 1000) success(json.data);
-                else alert(json.message);
+                else fail(json.message);
             });
+
+            setLoading(false);
         })
         .catch((error) => {
-            alert(error);
+            fail(error);
+            setLoading(false);
         });
 }

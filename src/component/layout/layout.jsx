@@ -19,7 +19,7 @@ class Layout extends Component {
                 <div id="root">
                     <Header/>
                     {children}
-                    <Footer/>
+                    {/*<Footer/>*/}
                 </div>
             </ThemeProvider>
         )
