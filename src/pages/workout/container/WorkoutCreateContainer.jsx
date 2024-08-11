@@ -259,7 +259,6 @@ class WorkoutCreateContainer extends React.Component {
                     </tbody>
                 </table>
                 <button onClick={this.handleCreateBtnClick}>생성</button>
-                <button onClick={()=>{console.log(selectedBodyPartList)}}>test</button>
                 <ConfirmModal
                     isOpen={confirmModalIsOpen}
                     onRequestClose={()=>{this.toggleModal('confirmModalIsOpen', false)}}
