@@ -18,6 +18,8 @@ class WorkoutCreateContainer extends React.Component {
         this.handleCreateBtnClick = this.handleCreateBtnClick.bind(this);
         this.handleMachineSelect = this.handleMachineSelect.bind(this);
         this.handleBodyPartSelect = this.handleBodyPartSelect.bind(this);
+        this.handleMachineRemove = this.handleMachineRemove.bind(this);
+        this.handleBodyPartRemove = this.handleBodyPartRemove.bind(this);
 
         this.setConfirmMethod = this.setConfirmMethod.bind(this);
         this.setConfirmMessage = this.setConfirmMessage.bind(this);
@@ -99,6 +101,15 @@ class WorkoutCreateContainer extends React.Component {
         await WorkoutCreateAction.pushSelectedBodyPart(JSON.parse(e.target.value));
         await this.setState({ selectedBodyPart: '' });
     }
+    async handleMachineRemove(item) {
+        const { WorkoutCreateAction } = this.props;
+        await WorkoutCreateAction.popSelectedMachine(JSON.parse(item).id);
+    }
+    async handleBodyPartRemove(item) {
+        const { WorkoutCreateAction } = this.props;
+        await WorkoutCreateAction.popSelectedBodyPart(JSON.parse(item).id);
+    }
+
 
     setConfirmMethod(method) {
         if(method === 'create') this.setState({ confirmMethod: this.ajaxCreateWorkout });
@@ -162,8 +173,9 @@ class WorkoutCreateContainer extends React.Component {
             success: (result) => {
                 this.setState({ machineList: result.content });
             },
-            fail: (error) => {
-                this.setAlertMessage('운동기구 조회에 실패했습니다.\n', error);
+            fail: (message) => {
+                this.setAlertMessage('운동기구 조회에 실패했습니다.\n', message);
+                this.toggleModal('alertModalIsOpen', true);
             }
         })
     }
@@ -175,8 +187,9 @@ class WorkoutCreateContainer extends React.Component {
             success: (result) => {
                 this.setState({ bodyPartList: result.content });
             },
-            fail: (error) => {
-                this.setAlertMessage('운동부위 조회에 실패했습니다.\n', error);
+            fail: (message) => {
+                this.setAlertMessage('운동부위 조회에 실패했습니다.\n', message);
+                this.toggleModal('alertModalIsOpen', true);
             }
         })
     }
@@ -227,7 +240,7 @@ class WorkoutCreateContainer extends React.Component {
                         <td>선택된 운동 기구</td>
                         <td>
                             {selectedMachineList.map((item, index) => (
-                                <button key={index}>{item.koreanName}</button>
+                                <button key={index} onClick={()=>{this.handleMachineRemove(JSON.stringify(item))}}>{item.koreanName}</button>
                             ))}
                             <span style={{fontSize: 10, color: '#FF0000'}}> *버튼을 누르면 제거</span>
                         </td>
@@ -247,7 +260,7 @@ class WorkoutCreateContainer extends React.Component {
                         <td>선택된 운동 부위</td>
                         <td>
                             {selectedBodyPartList.map((item, index) => (
-                                <button key={index}>{item.koreanName}</button>
+                                <button key={index} onClick={()=>{this.handleBodyPartRemove(JSON.stringify(item))}}>{item.koreanName}</button>
                             ))}
                             <span style={{fontSize: 10, color: '#FF0000'}}> *버튼을 누르면 제거</span>
                         </td>

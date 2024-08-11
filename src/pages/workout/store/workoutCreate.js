@@ -37,7 +37,7 @@ export default handleActions({
     [SET_DESCRIPTION]: (state, action) => ({...state, description: action.payload}),
     [SET_VIDEO_LINK]: (state, action) => ({...state, videoLink: action.payload}),
     [PUSH_SELECTED_BODY_PART]: (state, action) => ({...state, selectedBodyPartList: state.selectedBodyPartList.concat(action.payload)}),
-    [POP_SELECTED_BODY_PART]: (state, action) => ({...state, selectedBodyPartList: state.selectedBodyPartList.filter(id => id !== action.payload)}),
+    [POP_SELECTED_BODY_PART]: (state, action) => ({...state, selectedBodyPartList: state.selectedBodyPartList.filter(bodypart => bodypart.id !== action.payload)}),
     [PUSH_SELECTED_MACHINE]: (state, action) => ({...state, selectedMachineList: state.selectedMachineList.concat(action.payload)}),
-    [POP_SELECTED_MACHINE]: (state, action) => ({...state, selectedMachineList: state.selectedMachineList.filter(id => id !== action.payload)}),
+    [POP_SELECTED_MACHINE]: (state, action) => ({...state, selectedMachineList: state.selectedMachineList.filter(machine => machine.id !== action.payload)}),
 }, initialState);

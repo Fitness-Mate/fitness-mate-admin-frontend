@@ -16,6 +16,9 @@ class MachineCreateContainer extends React.Component {
         this.toggleModal = this.toggleModal.bind(this);
 
         this.handleCreateBtnClick = this.handleCreateBtnClick.bind(this);
+        this.handleBodyPartSelect = this.handleBodyPartSelect.bind(this);
+        this.handleBodyPartRemove = this.handleBodyPartRemove.bind(this);
+
         this.setConfirmMethod = this.setConfirmMethod.bind(this);
         this.setConfirmMessage = this.setConfirmMessage.bind(this);
         this.setAlertRedirectUrl = this.setAlertRedirectUrl.bind(this);
@@ -24,6 +27,7 @@ class MachineCreateContainer extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
 
         this.ajaxMachineCreate = this.ajaxMachineCreate.bind(this);
+        this.ajaxGetBodyPartList = this.ajaxGetBodyPartList.bind(this);
 
         this.state = {
             loading: false,
@@ -34,7 +38,14 @@ class MachineCreateContainer extends React.Component {
             alertMessage: '',
             confirmModalIsOpen: false,
             alertModalIsOpen: false,
+
+            bodyPartList: [],
+            selectedBodyPart: ''
         }
+    }
+
+    componentDidMount() {
+        this.ajaxGetBodyPartList();
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -47,9 +58,12 @@ class MachineCreateContainer extends React.Component {
             || this.state.alertMessage !== nextState.alertMessage
             || this.state.confirmModalIsOpen !== nextState.confirmModalIsOpen
             || this.state.alertModalIsOpen !== nextState.alertModalIsOpen
+            || this.state.bodyPartList !== nextState.bodyPartList
+            || this.state.selectedBodyPart !== nextState.selectedBodyPart
 
             || this.props.korName !== nextProps.korName
             || this.props.engName !== nextProps.engName
+            || this.props.selectedBodyPartList !== nextProps.selectedBodyPartList
         )
     }
 
@@ -66,6 +80,16 @@ class MachineCreateContainer extends React.Component {
         this.setConfirmMethod('create');
         this.toggleModal('confirmModalIsOpen', true);
     }
+    async handleBodyPartSelect(e) {
+        const { MachineCreateAction } = this.props;
+        await MachineCreateAction.pushSelectedBodyPart(JSON.parse(e.target.value));
+        await this.setState({ selectedBodyPart: '' });
+    }
+    async handleBodyPartRemove(item) {
+        const { MachineCreateAction } = this.props;
+        await MachineCreateAction.popSelectedBodyPart(JSON.parse(item).id);
+    }
+
     setConfirmMethod(method) {
         if(method === 'create') this.setState({ confirmMethod: this.ajaxMachineCreate });
     }
@@ -88,15 +112,19 @@ class MachineCreateContainer extends React.Component {
 
     /* ajax request methods */
     ajaxMachineCreate() {
-        const { korName, engName } = this.props;
+
+        console.log(this.props.korName);
+        console.log(this.props.engName);
+        console.log(this.props.selectedBodyPartList.map(item => item.id));
 
         apiUtil.sendRequest({
             setLoading: this.setLoading,
             url: `/api/admin/machine`,
             method: apiUtil.methods.POST,
             data: {
-                korName: korName,
-                engName: engName
+                koreanName: this.props.korName,
+                englishName: this.props.engName,
+                bodyPartIdList: this.props.selectedBodyPartList.map(item => item.id)
             },
             success: (result) => {
                 this.toggleModal('confirmModalIsOpen', false);
@@ -113,6 +141,20 @@ class MachineCreateContainer extends React.Component {
             }
         })
     }
+    ajaxGetBodyPartList() {
+        apiUtil.sendRequest({
+            setLoading: this.setLoading,
+            url: `/api/admin/bodypart?page=1&size=50&sort=id&direction=ASC`,
+            method: apiUtil.methods.GET,
+            success: (result) => {
+                this.setState({ bodyPartList: result.content });
+            },
+            fail: (message) => {
+                this.setAlertMessage('운동부위 조회에 실패했습니다.\n', message);
+                this.toggleModal('alertModalIsOpen', true);
+            }
+        })
+    }
 
 
     render() {
@@ -120,6 +162,8 @@ class MachineCreateContainer extends React.Component {
         const { confirmMethod, confirmMessage, alertRedirectUrl, alertMessage } = this.state;
         const { confirmModalIsOpen, alertModalIsOpen } = this.state;
 
+        const { bodyPartList, selectedBodyPart } = this.state;
+        const { selectedBodyPartList } = this.props;
         const { korName, engName } = this.props;
 
         return (
@@ -134,6 +178,26 @@ class MachineCreateContainer extends React.Component {
                     <tr>
                         <td>기구 이름 (ENG)</td>
                         <td><input type='text' name='engName' value={engName} onChange={this.handleInputChange}/></td>
+                    </tr>
+                    <tr>
+                        <td>관련 운동 부위</td>
+                        <td>
+                            <select value={selectedBodyPart} onChange={this.handleBodyPartSelect}>
+                                <option value=''>운동부위 선택해서 추가</option>
+                                {bodyPartList.length !== 0 && bodyPartList.map((item, index) => (
+                                    <option key={index} value={JSON.stringify(item)}>{item.koreanName}</option>
+                                ))}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>선택된 운동 부위</td>
+                        <td>
+                            {selectedBodyPartList.map((item, index) => (
+                                <button key={index} onClick={() => {this.handleBodyPartRemove(JSON.stringify(item))}}>{item.koreanName}</button>
+                            ))}
+                            <span style={{fontSize: 10, color: '#FF0000'}}> *버튼을 누르면 제거</span>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -162,6 +226,7 @@ class MachineCreateContainer extends React.Component {
 export default connect((state) => ({
         korName: state.machineCreate.korName,
         engName: state.machineCreate.engName,
+        selectedBodyPartList: state.machineCreate.selectedBodyPartList
     }),
     (dispatch) => ({
         MachineCreateAction: bindActionCreators(machineCreateAction, dispatch)
