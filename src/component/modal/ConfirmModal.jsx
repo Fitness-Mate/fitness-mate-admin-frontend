@@ -20,7 +20,7 @@ class ConfirmModal extends Component{
 
     render() {
         const { isOpen, onRequestClose } = this.props;
-        const { handleSelectY } = this.props;
+        const { confirmMethod } = this.props;
         const { message } = this.props;
 
         return (
@@ -29,7 +29,7 @@ class ConfirmModal extends Component{
                     <span style={{whiteSpace: "pre-wrap"}}>{message}</span>
                 </div>
                 <div className='modal-footer'>
-                    <button onClick={handleSelectY}>확인</button>
+                    <button onClick={confirmMethod}>확인</button>
                     <button onClick={()=>{onRequestClose()}}>취소</button>
                 </div>
             </Modal>

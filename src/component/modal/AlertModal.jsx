@@ -18,7 +18,7 @@ class AlertModal extends Component{
     }
 
     render() {
-        const { isOpen, onRequestClose, message } = this.props;
+        const { isOpen, onRequestClose, redirectUrl, message } = this.props;
 
         return (
             <Modal isOpen={isOpen} onRequestClose={onRequestClose} className="react-modal" overlayClassName="modal-overlay">
@@ -26,7 +26,7 @@ class AlertModal extends Component{
                     <span style={{whiteSpace: "pre-wrap"}}>{message}</span>
                 </div>
                 <div className='modal-footer'>
-                    <button onClick={()=>{onRequestClose()}}>확인</button>
+                    <button onClick={()=>{ redirectUrl ? window.location.href=redirectUrl: onRequestClose()}}>확인</button>
                 </div>
             </Modal>
         )

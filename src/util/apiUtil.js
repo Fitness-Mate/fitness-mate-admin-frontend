@@ -34,7 +34,7 @@ export function sendRequest(configs) {
 
             res.json().then((json)=>{
                 if(json.code === 1000) success(json.data);
-                else fail(json.message);
+                else fail(json.data);
             });
 
             setLoading(false);

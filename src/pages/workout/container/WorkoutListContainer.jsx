@@ -57,7 +57,7 @@ class WorkoutListContainer extends React.Component {
 
         apiUtil.sendRequest({
             setLoading: this.setLoading,
-            url: `/api/admin/workout?page=${page}&size=${size}`,
+            url: `/api/admin/workout?page=${page}&size=${size}&sort=createdAt&direction=DESC`,
             method: apiUtil.methods.GET,
             success: (result) => {
                 WorkoutAction.setWorkoutList(result.content);
@@ -78,18 +78,19 @@ class WorkoutListContainer extends React.Component {
                 <Loading loading={loading}/>
                 {workoutList != null && workoutList.length !== 0 && (
                     <React.Fragment>
-                            <button>운동 생성</button>
+                            <button onClick={()=>{window.location.href='/workout/create'}}>운동 생성</button>
                             <table>
                                 <thead>
-                                <tr>
-                                    <th>번호</th>
-                                    <th>이미지</th>
-                                    <th>운동 이름 (KOR)</th>
-                                    <th>운동 이름 (ENG)</th>
-                                    <th>관련 운동기구</th>
-                                    <th>관련 운동부위</th>
-                                    <th>설명</th>
-                                </tr>
+                                    <tr>
+                                        <th>번호</th>
+                                        <th>이미지</th>
+                                        <th>운동 이름 (KOR)</th>
+                                        <th>운동 이름 (ENG)</th>
+                                        <th>관련 운동기구</th>
+                                        <th>관련 운동부위</th>
+                                        <th>설명</th>
+                                        <th>생성일시</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                 {workoutList.map((item, idx) => (
@@ -101,6 +102,7 @@ class WorkoutListContainer extends React.Component {
                                             <td>{JSON.stringify(item.machineKoreanName)}</td>
                                             <td>{JSON.stringify(item.bodyPartKoreanName)}</td>
                                             <td>{item.description}</td>
+                                            <td>{item.createdAt}</td>
                                         </tr>
                                 ))}
                                 </tbody>

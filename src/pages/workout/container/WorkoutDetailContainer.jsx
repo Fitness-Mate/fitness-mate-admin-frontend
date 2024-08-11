@@ -1,12 +1,12 @@
 import React from 'react';
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
+import {Link} from "@mui/material";
 
 import * as apiUtil from "../../../util/apiUtil";
 import * as workoutAction from "../store/workout"
 
 import Loading from "../../../component/Loading";
-import {Link} from "@mui/material";
 import AlertModal from "../../../component/modal/AlertModal";
 import ConfirmModal from "../../../component/modal/ConfirmModal";
 
@@ -16,16 +16,25 @@ class WorkoutDetailContainer extends React.Component {
 
         this.setLoading = this.setLoading.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
-        this.handleAlertMessage = this.handleAlertMessage.bind(this);
+
+        this.handleDeleteBtnClick = this.handleDeleteBtnClick.bind(this);
+        this.setConfirmMethod = this.setConfirmMethod.bind(this);
+        this.setConfirmMessage = this.setConfirmMessage.bind(this);
+        this.setAlertRedirectUrl = this.setAlertRedirectUrl.bind(this);
+        this.setAlertMessage = this.setAlertMessage.bind(this);
 
         this.ajaxGetWorkout = this.ajaxGetWorkout.bind(this);
         this.ajaxDeleteWorkout = this.ajaxDeleteWorkout.bind(this);
 
         this.state = {
             loading: false,
+
+            confirmMethod: null,
+            confirmMessage: '',
+            alertRedirectUrl: null,
             alertMessage: '',
-            deleteConfirmModalIsOpen: false,
-            deleteAlertModalIsOpen: false
+            confirmModalIsOpen: false,
+            alertModalIsOpen: false
         }
     }
 
@@ -35,9 +44,13 @@ class WorkoutDetailContainer extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         return (
             this.state.loading !== nextState.loading
+
+            || this.state.confirmMethod !== nextState.confirmMethod
+            || this.state.confirmMessage !== nextState.confirmMessage
+            || this.state.alertRedirectUrl !== nextState.alertRedirectUrl
             || this.state.alertMessage !== nextState.alertMessage
-            || this.state.deleteConfirmModalIsOpen !== nextState.deleteConfirmModalIsOpen
-            || this.state.deleteAlertModalIsOpen !== nextState.deleteAlertModalIsOpen
+            || this.state.confirmModalIsOpen !== nextState.confirmModalIsOpen
+            || this.state.alertModalIsOpen !== nextState.alertModalIsOpen
 
             || this.props.workout !== nextProps.workout
         )
@@ -50,7 +63,23 @@ class WorkoutDetailContainer extends React.Component {
     toggleModal(modalName, value) {
         this.setState({ [modalName]: value });
     }
-    handleAlertMessage(message) {
+
+    handleDeleteBtnClick() {
+        this.setConfirmMessage('운동을 삭제하시겠습니까?');
+        this.setConfirmMethod('delete');
+        this.toggleModal('confirmModalIsOpen', true);
+    }
+
+    setConfirmMethod(method) {
+        if(method === 'delete') this.setState({ confirmMethod: this.ajaxDeleteWorkout });
+    }
+    setConfirmMessage(message) {
+        this.setState({ confirmMessage: message });
+    }
+    setAlertRedirectUrl(url) {
+        this.setState({ alertRedirectUrl: url });
+    }
+    setAlertMessage(message) {
         this.setState({ alertMessage: message });
     }
 
@@ -74,24 +103,27 @@ class WorkoutDetailContainer extends React.Component {
         apiUtil.sendRequest({
             setLoading: this.setLoading,
             url: `/api/admin/workout/${id}`,
-            method: apiUtil.methods.GET,
+            method: apiUtil.methods.DELETE,
             success: (result) => {
-                this.toggleModal('deleteConfirmModalIsOpen', false);
+                this.toggleModal('confirmModalIsOpen', false);
 
-                this.handleAlertMessage('운동 삭제가 완료되었습니다.');
-                this.toggleModal('deleteAlertModalIsOpen', true);
+                this.setAlertMessage('운동 삭제가 완료되었습니다.');
+                this.setAlertRedirectUrl('/workout/list');
+                this.toggleModal('alertModalIsOpen', true);
             },
             fail: (error) => {
-                this.handleAlertMessage('운동 삭제에 실패했습니다.');
-                this.toggleModal('deleteAlertModalIsOpen', true);
+                this.toggleModal('confirmModalIsOpen', false);
+
+                this.setAlertMessage('운동 삭제에 실패했습니다.');
+                this.toggleModal('alertModalIsOpen', true);
             }
         })
     }
 
     render() {
         const { loading } = this.state;
-        const { alertMessage } = this.state;
-        const { deleteConfirmModalIsOpen, deleteAlertModalIsOpen } = this.state;
+        const { confirmMethod, confirmMessage, alertRedirectUrl, alertMessage } = this.state;
+        const { confirmModalIsOpen, alertModalIsOpen } = this.state;
         const { workout } = this.props;
 
         return (
@@ -100,7 +132,7 @@ class WorkoutDetailContainer extends React.Component {
                 { workout != null && (
                     <React.Fragment>
                         {/* TODO */} {/* <button>수정</button>*/}
-                        <button onClick={()=>this.toggleModal('deleteConfirmModalIsOpen', true)}>삭제</button>
+                        <button onClick={this.handleDeleteBtnClick}>삭제</button>
                         <table>
                             <tbody>
                             <tr>
@@ -133,14 +165,15 @@ class WorkoutDetailContainer extends React.Component {
                             </tbody>
                         </table>
                         <ConfirmModal
-                            isOpen={deleteConfirmModalIsOpen}
-                            onRequestClose={()=>{this.toggleModal('deleteConfirmModalIsOpen', false)}}
-                            handleSelectY={this.ajaxDeleteWorkout}
-                            message='운동을 삭제하시겠습니까?'
+                            isOpen={confirmModalIsOpen}
+                            onRequestClose={()=>{this.toggleModal('confirmModalIsOpen', false)}}
+                            confirmMethod={confirmMethod}
+                            message={confirmMessage}
                         />
                         <AlertModal
-                            isOpen={deleteAlertModalIsOpen}
-                            onRequestClose={()=>{this.toggleModal('deleteAlertModalIsOpen', false)}}
+                            isOpen={alertModalIsOpen}
+                            onRequestClose={()=>{this.toggleModal('alertModalIsOpen', false)}}
+                            redirectUrl={alertRedirectUrl}
                             message={alertMessage}
                         />
                     </React.Fragment>
