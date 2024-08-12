@@ -14,6 +14,9 @@ import BodyPartDetailPage from "./pages/bodypart/page/BodyPartDetailPage";
 import WorkoutCreatePage from "./pages/workout/page/WorkoutCreatePage";
 import MachineCreatePage from "./pages/machine/page/MachineCreatePage";
 import BodyPartCreatePage from "./pages/bodypart/page/BodyPartCreatePage";
+import SupplementListPage from "./pages/supplement/page/SupplementListPage";
+import SupplementDetailPage from "./pages/supplement/page/SupplementDetailPage";
+import SupplementCreatePage from "./pages/supplement/page/SupplementCreatePage";
 
 class AppRouter extends Component {
     constructor(props) {
@@ -38,6 +41,10 @@ class AppRouter extends Component {
                     <Route path="/bodypart/list" element={<BodyPartListPage />} />
                     <Route path="/bodypart/:id/detail" element={<BodyPartDetailPage />} />
                     <Route path="/bodypart/create" element={<BodyPartCreatePage />} />
+
+                    <Route path="/supplement/list" element={<SupplementListPage />} />
+                    <Route path="/supplement/:id/detail" element={<SupplementDetailPage />} />
+                    <Route path="/supplement/create" element={<SupplementCreatePage />} />
                 </Routes>
             </Router>
         )
