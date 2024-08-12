@@ -111,10 +111,10 @@ class WorkoutDetailContainer extends React.Component {
                 this.setAlertRedirectUrl('/workout/list');
                 this.toggleModal('alertModalIsOpen', true);
             },
-            fail: (error) => {
+            fail: (message) => {
                 this.toggleModal('confirmModalIsOpen', false);
 
-                this.setAlertMessage('운동 삭제에 실패했습니다.');
+                this.setAlertMessage(`운동 삭제에 실패했습니다.\n${message}`);
                 this.toggleModal('alertModalIsOpen', true);
             }
         })

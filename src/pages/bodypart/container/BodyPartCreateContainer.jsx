@@ -1,14 +1,15 @@
 import React from 'react';
-import Loading from "../../../component/Loading";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 
-import * as machineCreateAction from "../../machine/store/machineCreate";
+import * as bodyPartCreateAction from "../store/bodypartCreate";
+
+import Loading from "../../../component/Loading";
 import ConfirmModal from "../../../component/modal/ConfirmModal";
 import AlertModal from "../../../component/modal/AlertModal";
 import * as apiUtil from "../../../util/apiUtil";
 
-class MachineCreateContainer extends React.Component {
+class BodyPartCreateContainer extends React.Component {
     constructor(props) {
         super(props);
 
@@ -16,8 +17,6 @@ class MachineCreateContainer extends React.Component {
         this.toggleModal = this.toggleModal.bind(this);
 
         this.handleCreateBtnClick = this.handleCreateBtnClick.bind(this);
-        this.handleBodyPartSelect = this.handleBodyPartSelect.bind(this);
-        this.handleBodyPartRemove = this.handleBodyPartRemove.bind(this);
 
         this.setConfirmMethod = this.setConfirmMethod.bind(this);
         this.setConfirmMessage = this.setConfirmMessage.bind(this);
@@ -26,8 +25,7 @@ class MachineCreateContainer extends React.Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
 
-        this.ajaxMachineCreate = this.ajaxMachineCreate.bind(this);
-        this.ajaxGetBodyPartList = this.ajaxGetBodyPartList.bind(this);
+        this.ajaxBodyPartCreate = this.ajaxBodyPartCreate.bind(this);
 
         this.state = {
             loading: false,
@@ -38,32 +36,21 @@ class MachineCreateContainer extends React.Component {
             alertMessage: '',
             confirmModalIsOpen: false,
             alertModalIsOpen: false,
-
-            bodyPartList: [],
-            selectedBodyPart: ''
         }
-    }
-
-    componentDidMount() {
-        this.ajaxGetBodyPartList();
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         return (
             this.state.loading !== nextState.loading
-
             || this.state.confirmMethod !== nextState.confirmMethod
             || this.state.confirmMessage !== nextState.confirmMessage
             || this.state.alertRedirectUrl !== nextState.alertRedirectUrl
             || this.state.alertMessage !== nextState.alertMessage
             || this.state.confirmModalIsOpen !== nextState.confirmModalIsOpen
             || this.state.alertModalIsOpen !== nextState.alertModalIsOpen
-            || this.state.bodyPartList !== nextState.bodyPartList
-            || this.state.selectedBodyPart !== nextState.selectedBodyPart
 
             || this.props.korName !== nextProps.korName
             || this.props.engName !== nextProps.engName
-            || this.props.selectedBodyPartList !== nextProps.selectedBodyPartList
         )
     }
 
@@ -76,22 +63,12 @@ class MachineCreateContainer extends React.Component {
     }
 
     handleCreateBtnClick() {
-        this.setConfirmMessage('운동기구를 생성하시겠습니까?');
+        this.setConfirmMessage('운동부위를 생성하시겠습니까?');
         this.setConfirmMethod('create');
         this.toggleModal('confirmModalIsOpen', true);
     }
-    async handleBodyPartSelect(e) {
-        const { MachineCreateAction } = this.props;
-        await MachineCreateAction.pushSelectedBodyPart(JSON.parse(e.target.value));
-        await this.setState({ selectedBodyPart: '' });
-    }
-    async handleBodyPartRemove(item) {
-        const { MachineCreateAction } = this.props;
-        await MachineCreateAction.popSelectedBodyPart(JSON.parse(item).id);
-    }
-
     setConfirmMethod(method) {
-        if(method === 'create') this.setState({ confirmMethod: this.ajaxMachineCreate });
+        if(method === 'create') this.setState({ confirmMethod: this.ajaxBodyPartCreate });
     }
     setConfirmMessage(message) {
         this.setState({ confirmMessage: message });
@@ -104,95 +81,56 @@ class MachineCreateContainer extends React.Component {
     }
 
     async handleInputChange(e) {
-        const { MachineCreateAction } = this.props;
+        const { BodyPartCreateAction } = this.props;
 
-        if(e.target.name === 'korName') await MachineCreateAction.setKorName(e.target.value);
-        if(e.target.name === 'engName') await MachineCreateAction.setEngName(e.target.value);
+        if(e.target.name === 'korName') await BodyPartCreateAction.setKorName(e.target.value);
+        if(e.target.name === 'engName') await BodyPartCreateAction.setEngName(e.target.value);
     }
 
     /* ajax request methods */
-    ajaxMachineCreate() {
+    ajaxBodyPartCreate() {
         apiUtil.sendRequest({
             setLoading: this.setLoading,
-            url: `/api/admin/machine`,
+            url: `/api/admin/bodypart`,
             method: apiUtil.methods.POST,
             data: {
                 koreanName: this.props.korName,
                 englishName: this.props.engName,
-                bodyPartIdList: this.props.selectedBodyPartList.map(item => item.id)
             },
             success: (result) => {
                 this.toggleModal('confirmModalIsOpen', false);
 
-                this.setAlertMessage('운동기구 생성이 완료되었습니다.');
-                this.setAlertRedirectUrl('/machine/list');
+                this.setAlertMessage('운동부위 생성이 완료되었습니다.');
+                this.setAlertRedirectUrl('/bodypart/list');
                 this.toggleModal('alertModalIsOpen', true);
             },
             fail: (message) => {
                 this.toggleModal('confirmModalIsOpen', false);
 
-                this.setAlertMessage(`운동기구 생성에 실패했습니다.\n${message}`);
+                this.setAlertMessage(`운동부위 생성에 실패했습니다.\n${message}`);
                 this.toggleModal('alertModalIsOpen', true);
             }
         })
     }
-    ajaxGetBodyPartList() {
-        apiUtil.sendRequest({
-            setLoading: this.setLoading,
-            url: `/api/admin/bodypart?page=1&size=50&sort=id&direction=ASC`,
-            method: apiUtil.methods.GET,
-            success: (result) => {
-                this.setState({ bodyPartList: result.content });
-            },
-            fail: (message) => {
-                this.setAlertMessage('운동부위 조회에 실패했습니다.\n', message);
-                this.toggleModal('alertModalIsOpen', true);
-            }
-        })
-    }
-
 
     render() {
-        const { loading } = this.state;
         const { confirmMethod, confirmMessage, alertRedirectUrl, alertMessage } = this.state;
         const { confirmModalIsOpen, alertModalIsOpen } = this.state;
 
-        const { bodyPartList, selectedBodyPart } = this.state;
-        const { selectedBodyPartList } = this.props;
         const { korName, engName } = this.props;
 
         return (
             <React.Fragment>
-                <Loading loading={loading}/>
+                <Loading loading={this.state.loading}/>
                 <table>
                     <tbody>
                     <tr>
-                        <td>기구 이름 (KOR)</td>
+                        <td>운동 이름 (KOR)</td>
                         <td><input type='text' name='korName' value={korName} onChange={this.handleInputChange}/></td>
                     </tr>
                     <tr>
-                        <td>기구 이름 (ENG)</td>
+                        <td>운동 이름 (ENG)</td>
                         <td><input type='text' name='engName' value={engName} onChange={this.handleInputChange}/></td>
-                    </tr>
-                    <tr>
-                        <td>관련 운동 부위</td>
-                        <td>
-                            <select value={selectedBodyPart} onChange={this.handleBodyPartSelect}>
-                                <option value=''>운동부위 선택해서 추가</option>
-                                {bodyPartList.length !== 0 && bodyPartList.map((item, index) => (
-                                    <option key={index} value={JSON.stringify(item)}>{item.koreanName}</option>
-                                ))}
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>선택된 운동 부위</td>
-                        <td>
-                            {selectedBodyPartList.map((item, index) => (
-                                <button key={index} onClick={() => {this.handleBodyPartRemove(JSON.stringify(item))}}>{item.koreanName}</button>
-                            ))}
-                            <span style={{fontSize: 10, color: '#FF0000'}}> *버튼을 누르면 제거</span>
-                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -219,11 +157,10 @@ class MachineCreateContainer extends React.Component {
 }
 
 export default connect((state) => ({
-        korName: state.machineCreate.korName,
-        engName: state.machineCreate.engName,
-        selectedBodyPartList: state.machineCreate.selectedBodyPartList
+        korName: state.bodyPartCreate.korName,
+        engName: state.bodyPartCreate.engName,
     }),
     (dispatch) => ({
-        MachineCreateAction: bindActionCreators(machineCreateAction, dispatch)
+        BodyPartCreateAction: bindActionCreators(bodyPartCreateAction, dispatch)
     })
-)(MachineCreateContainer);
+)(BodyPartCreateContainer);

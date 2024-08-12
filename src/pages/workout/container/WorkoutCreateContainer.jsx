@@ -195,7 +195,6 @@ class WorkoutCreateContainer extends React.Component {
     }
 
     render() {
-        const { loading } = this.state;
         const { confirmMethod, confirmMessage, alertRedirectUrl, alertMessage } = this.state;
         const { confirmModalIsOpen, alertModalIsOpen } = this.state;
 
@@ -206,7 +205,7 @@ class WorkoutCreateContainer extends React.Component {
 
         return (
             <React.Fragment>
-                <Loading loading={loading}/>
+                <Loading loading={this.state.loading}/>
                 <table>
                     <tbody>
                     <tr>
