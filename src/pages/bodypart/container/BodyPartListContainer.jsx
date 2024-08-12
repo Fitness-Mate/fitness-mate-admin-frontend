@@ -145,8 +145,8 @@ class BodyPartListContainer extends React.Component {
                     <thead>
                     <tr>
                         <th>번호</th>
-                        <th>기구 이름 (KOR)</th>
-                        <th>기구 이름 (ENG)</th>
+                        <th>부위 이름 (KOR)</th>
+                        <th>부위 이름 (ENG)</th>
                         <th>생성일시</th>
                         {/*<th>삭제버튼</th>*/}
                     </tr>

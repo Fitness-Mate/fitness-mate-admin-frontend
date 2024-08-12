@@ -9,7 +9,7 @@ class SupplementDetailContainer extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <h1>BodyPartDetailContainer</h1>
+                <h1>SupplementDetailContainer</h1>
             </React.Fragment>
         )
     }

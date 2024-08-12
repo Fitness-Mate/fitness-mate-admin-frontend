@@ -7,6 +7,7 @@ import * as supplementAction from "../../supplement/store/supplement";
 
 import PaginationComponent from "../../../component/PagenationComponent";
 import Loading from "../../../component/Loading";
+import {Link} from "@mui/material";
 
 class SupplementListContainer extends React.Component {
     constructor(props) {
@@ -41,8 +42,8 @@ class SupplementListContainer extends React.Component {
         this.setState({ loading: loading });
     }
     async handlePageChange(event, value) {
-        const { BodyPartAction } = this.props;
-        await BodyPartAction.setPage(value);
+        const { SupplementAction } = this.props;
+        await SupplementAction.setPage(value);
 
         this.ajaxGetSupplementList();
     }
@@ -52,15 +53,16 @@ class SupplementListContainer extends React.Component {
         const { SupplementAction } = this.props;
         const { page, size } = this.props;
 
-        // apiUtil.sendRequest({
-        //     setLoading: this.setLoading,
-        //     url: `/api/admin/supplement?page=${page}&size=${size}&sort=createdAt&direction=DESC`,
-        //     method: apiUtil.methods.GET,
-        //     success: (result) => {
-        //         SupplementAction.setSupplementList(result.content);
-        //         SupplementAction.setTotal(result.total);
-        //     }
-        // });
+        apiUtil.sendRequest({
+            setLoading: this.setLoading,
+            url: `/api/admin/supplement?page=${page}&size=${size}&sort=createdAt&direction=DESC`,
+            method: apiUtil.methods.GET,
+            success: (result) => {
+                console.log(result);
+                SupplementAction.setSupplementList(result.content);
+                SupplementAction.setTotal(result.total);
+            }
+        });
     }
 
     render() {
@@ -74,19 +76,37 @@ class SupplementListContainer extends React.Component {
                 <table>
                     <thead>
                     <tr>
-
+                        <th>번호</th>
+                        <th>이미지</th>
+                        <th>보조제 종류</th>
+                        <th>제조사명 (KOR)</th>
+                        <th>제조사명 (ENG)</th>
+                        <th>보조제명 (KOR)</th>
+                        <th>보조제명 (ENG)</th>
+                        <th>맛</th>
+                        <th>가격</th>
+                        <th>용량 (1스쿱)</th>
+                        <th>설명</th>
+                        <th>생성일시</th>
                     </tr>
                     </thead>
                     <tbody>
-                        {/*{supplementList.map((item, idx) => (*/}
-                        {/*    <tr key={idx}>*/}
-                        {/*        <td>{10 * (page - 1) + idx + 1}</td>*/}
-                        {/*        <td>{item.koreanName}</td>*/}
-                        {/*        <td>{item.englishName}</td>*/}
-                        {/*        <td>{item.createdAt}</td>*/}
-                        {/*        <td><button onClick={() => {this.handleDeleteBtnClick(item.id)}}>삭제</button></td>*/}
-                        {/*    </tr>*/}
-                        {/*))}*/}
+                        {supplementList.map((item, idx) => (
+                            <tr key={idx}>
+                                <td>{10 * (page - 1) + idx + 1}</td>
+                                <td><img src={item.imageURL} alt="" width={200}/></td>
+                                <td>{item.supplementType}</td>
+                                <td>{item.koreanCompanyName}</td>
+                                <td>{item.englishCompanyName}</td>
+                                <td><Link href={`/supplement/${item.id}/detail`}>{item.koreanName}</Link></td>
+                                <td>{item.englishName}</td>
+                                <td>{item.flavor}</td>
+                                <td>{item.price}</td>
+                                <td>{item.servings}</td>
+                                <td>{item.description}</td>
+                                <td>{item.createdAt}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
                 <PaginationComponent page={page} total={total} sizePerPage={size} handleChange={this.handlePageChange}/>

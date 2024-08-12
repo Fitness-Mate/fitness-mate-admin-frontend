@@ -1,7 +1,7 @@
 import {createAction, handleActions} from "redux-actions";
 
 const SET_SUPPLEMENT_LIST = 'supplement/SET_SUPPLEMENT_LIST';
-export const setBodyPartList = createAction(SET_SUPPLEMENT_LIST);
+export const setSupplementList = createAction(SET_SUPPLEMENT_LIST);
 
 const SET_PAGE = 'supplement/SET_PAGE';
 const SET_SIZE = 'supplement/SET_SIZE';
