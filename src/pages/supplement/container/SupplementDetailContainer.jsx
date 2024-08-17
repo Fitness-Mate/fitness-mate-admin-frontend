@@ -77,7 +77,23 @@ class SupplementDetailContainer extends React.Component {
         });
     }
     ajaxDeleteSupplement() {
+        const { id } = this.props;
 
+        apiUtil.sendRequest({
+            setLoading: this.setLoading,
+            url: `/api/admin/supplement/${id}`,
+            method: apiUtil.methods.DELETE,
+            success: (result) => {
+                this.setAlertMessage('보조제가 삭제되었습니다.');
+                this.setAlertRedirectUrl('/supplement/list');
+                this.toggleModal('alertModalIsOpen', true);
+            },
+            fail: (error) => {
+                this.setAlertMessage('보조제 삭제에 실패했습니다.');
+                this.setAlertRedirectUrl('/supplement/list');
+                this.toggleModal('alertModalIsOpen', true);
+            }
+        });
     }
 
     render() {

@@ -141,7 +141,7 @@ class SupplementCreateContainer extends React.Component {
         data.append('englishName', `(${this.state.engComName}) ${this.state.engName}`);
         data.append('image', this.state.image);
         data.append('flavor', this.state.flavor);
-        data.append('marketLink', this.state.marketLink);
+        data.append('marketURL', this.state.marketLink);
         data.append('price', this.state.price);
         data.append('servings', this.state.servings);
         data.append('description', this.state.description);
