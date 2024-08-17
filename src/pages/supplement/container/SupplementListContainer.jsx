@@ -72,7 +72,7 @@ class SupplementListContainer extends React.Component {
         return (
             <React.Fragment>
                 <Loading loading={this.state.loading}/>
-                <button onClick={() => {window.location.href = '/bodypart/create'}}>보조제 생성</button>
+                <button onClick={() => {window.location.href = '/supplement/create'}}>보조제 생성</button>
                 <table>
                     <thead>
                     <tr>

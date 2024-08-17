@@ -140,20 +140,36 @@ class SupplementDetailContainer extends React.Component {
                             <tr>
                                 <td>다른 맛</td>
                                 <td>{JSON.stringify(supplement.otherFlavors)}</td>
-                                {/*<td>{supplement.otherFlavors}</td>*/}
                             </tr>
-                            {/*<tr>*/}
-                            {/*    <td>관련 운동 부위</td>*/}
-                            {/*    <td>{JSON.stringify(workout.bodyPartKoreanName)}</td>*/}
-                            {/*</tr>*/}
-                            {/*<tr>*/}
-                            {/*    <td>운동 영상 링크</td>*/}
-                            {/*    <td><Link href={workout.videoLink} target='_blank'>{workout.videoLink}</Link></td>*/}
-                            {/*</tr>*/}
-                            {/*<tr>*/}
-                            {/*    <td>설명</td>*/}
-                            {/*    <td>{workout.description}</td>*/}
-                            {/*</tr>*/}
+                            {(supplement.supplementType === 'Gainer' || supplement.supplementType === 'Protein') && (
+                                <React.Fragment>
+                                    <tr><td>proteinPerServing</td><td>{supplement.proteinPerServing}</td></tr>
+                                    <tr><td>fatPerServing</td><td>{supplement.fatPerServing}</td></tr>
+                                    <tr><td>carbohydratePerServing</td><td>{supplement.carbohydratePerServing}</td></tr>
+                                    <tr><td>source</td><td>{supplement.source}</td></tr>
+                                </React.Fragment>
+                            )}
+                            {(supplement.supplementType === 'AminoAcid') && (
+                                <React.Fragment>
+                                    <tr><td>Leucine</td><td>{supplement.leucine}</td></tr>
+                                    <tr><td>IsoLeucine</td><td>{supplement.isoLeucine}</td></tr>
+                                    <tr><td>Valine</td><td>{supplement.valine}</td></tr>
+                                    <tr><td>L_Carnitine</td><td>{supplement.L_Carnitine}</td></tr>
+                                    <tr><td>L_Glutamine</td><td>{supplement.L_Glutamine}</td></tr>
+                                    <tr><td>L_Alanine</td><td>{supplement.L_Alanine}</td></tr>
+                                    <tr><td>L_Lysine</td><td>{supplement.L_Lysine}</td></tr>
+                                    <tr><td>methionine</td><td>{supplement.methionine}</td></tr>
+                                    <tr><td>phenylalanine</td><td>{supplement.phenylalanine}</td></tr>
+                                    <tr><td>threonine</td><td>{supplement.threonine}</td></tr>
+                                    <tr><td>histidine</td><td>{supplement.histidine}</td></tr>
+                                    <tr><td>tryptophan</td><td>{supplement.tryptophan}</td></tr>
+                                </React.Fragment>
+                            )}
+                            {(supplement.supplementType === 'Other') && (
+                                <React.Fragment>
+                                    <tr><td>other</td><td>{supplement.other}</td></tr>
+                                </React.Fragment>
+                            )}
                             </tbody>
                         </table>
                         <ConfirmModal

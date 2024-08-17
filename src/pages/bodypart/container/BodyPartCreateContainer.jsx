@@ -125,11 +125,11 @@ class BodyPartCreateContainer extends React.Component {
                 <table>
                     <tbody>
                     <tr>
-                        <td>운동 이름 (KOR)</td>
+                        <td>운동부위 이름 (KOR)</td>
                         <td><input type='text' name='korName' value={korName} onChange={this.handleInputChange}/></td>
                     </tr>
                     <tr>
-                        <td>운동 이름 (ENG)</td>
+                        <td>운동부위 이름 (ENG)</td>
                         <td><input type='text' name='engName' value={engName} onChange={this.handleInputChange}/></td>
                     </tr>
                     </tbody>
