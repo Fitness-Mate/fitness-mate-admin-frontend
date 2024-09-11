@@ -162,6 +162,10 @@ class WorkoutDetailContainer extends React.Component {
                                 <td>설명</td>
                                 <td>{workout.description}</td>
                             </tr>
+														<tr>
+                                <td>기타</td>
+                                <td>{workout.atcetera}</td>
+                            </tr>
                             </tbody>
                         </table>
                         <ConfirmModal

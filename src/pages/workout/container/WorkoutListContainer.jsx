@@ -69,6 +69,7 @@ class WorkoutListContainer extends React.Component {
     render() {
         const { loading } = this.state;
         const { workoutList } = this.props;
+				console.log(workoutList)
         const { page, size, total } = this.props;
 
         const { handlePageChange } = this;
@@ -89,6 +90,7 @@ class WorkoutListContainer extends React.Component {
                                         <th>관련 운동기구</th>
                                         <th>관련 운동부위</th>
                                         <th>설명</th>
+																				<th>etc</th>
                                         <th>생성일시</th>
                                     </tr>
                                 </thead>
@@ -102,6 +104,7 @@ class WorkoutListContainer extends React.Component {
                                             <td>{JSON.stringify(item.machineKoreanName)}</td>
                                             <td>{JSON.stringify(item.bodyPartKoreanName)}</td>
                                             <td>{item.description}</td>
+																						<td>{item.atcetera}</td>
                                             <td>{item.createdAt}</td>
                                         </tr>
                                 ))}
